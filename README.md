@@ -1,4 +1,4 @@
-This repository and [COBRA](https://github.com/acco93/cobra) contain source code and support material associated to the paper *Fast and Scalable Heuristic Solution of Large-Scale Capacitated Vehicle Routing Problem*.
+This repository and [COBRA](https://github.com/acco93/cobra) contain source code and support material associated wit the paper *A Fast and Scalable Heuristic for the Solution of Large-Scale Capacitated Vehicle Routing Problems*.
 
 ***
 **However, the source code will be made available once the paper is accepted.**

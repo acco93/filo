@@ -12,6 +12,5 @@ Alternatively all datasets can be downloaded from
 
 https://github.com/acco93/cobra/instances/
 
-For each dataset, there are results associated to short and long runs.
-For each instance and seed, there is .out file containing the solution value and the computing time in seconds and .sol containing the solution representation.
-
+For each dataset, there are results associated with short and long runs.
+For each instance and seed, there is ``.out` file containing the solution value and the computing time in seconds and `.sol` containing the solution representation.
