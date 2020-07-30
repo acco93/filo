@@ -24,23 +24,18 @@ Available options
 * `ENABLE_GUI` creates a GLFW window showing a graphical representation of the best found solution along with some information regarding move generators and recently accessed vertices, and another GLFW window showing the algorithm search trajectory. Some additional packages, e.g. `libglfw3-dev`, may be necessary to compile the code with this option.
 
 #### Running the code
-Once `filo` has been built, three arguments are required to run the executable
-1. a path to a compatible instance file
-2. an integer seed
-3. a path to a parameters file, some examples can be found in the [parameters directory](https://github.com/acco93/filo/parameters) in the root of the project
+Once `filo` has been built, you can run it by giving as first mandatory argument the path to a compatible instance file.
 
 As an example, if the executable is in the `build` directory and both `cobra` and `filo` projects are into a `git` directory in the `user` home
 ```
 cd /home/user/git/filo/build
 
-./filo /home/user/git/cobra/instances/X/X-n936-k151.vrp 0 ../parameters/x
+./filo /home/user/git/cobra/instances/X/X-n936-k151.vrp
 ```
 
-The parameter file, in addition to parameters explained in the paper contains 2 additional entries
-* `OutputPath` defining where to output result files. Default is the current directory. Note that a writable directory must be selected.
-* `ParserType` defining the parser to be used to process the instance. Possible values are `X`, `K`, and `Z`. The `X` parser works with **X** and **B** datasets. The `K` parser with the **K** dataset and the `Z` one with the **Z** dataset. For adding additional parsers check [AbstractInstanceParser.hpp](https://github.com/acco93/cobra/blob/master/include/cobra/AbstractInstanceParser.hpp).
+An help menu explaining available optional command line arguments can be read by executing `filo --help`.
 
-For the datasets described in the paper, please use the default parameters file found [here](https://github.com/acco93/filo/parameters).
+More examples on how to run the code can be found in the `scripts` directory.
 
 #### Screenshots
 Console output (`ENABLE_VERBOSE=ON`). ROUTEMIN: % Inf = n. infeasible solution over number of performed iterations. COREOPT: Gamma = average sparsification factor, Omega = average shaking intensity.
