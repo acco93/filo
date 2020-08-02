@@ -33,29 +33,29 @@ declare -a z_instances=("zk1.txt" "zk2.txt" "zk3.txt" "zk4.txt")
 
 for seed in {0..49..1}; do
 	for instance in "${x_instances[@]}"; do
-		${executable} ${path_to_cobra}/instances/X/${instance} --seed ${seed} --outpath results/x
-		${executable} ${path_to_cobra}/instances/X/${instance} --seed ${seed} --outpath results/x-long --coreopt-iterations 1000000
+		${executable} ${path_to_cobra}/instances/X/${instance} --seed ${seed} --outpath results/x/
+		${executable} ${path_to_cobra}/instances/X/${instance} --seed ${seed} --outpath results/x-long/ --coreopt-iterations 1000000
 	done
 done
 
 for seed in {0..49..1}; do
 	for instance in "${b_instances[@]}"; do
-		${executable} ${path_to_cobra}/instances/B/${instance} --seed ${seed} --outpath results/b
-		${executable} ${path_to_cobra}/instances/B/${instance} --seed ${seed} --outpath results/b-long --coreopt-iterations 1000000
+		${executable} ${path_to_cobra}/instances/B/${instance} --seed ${seed} --outpath results/b/
+		${executable} ${path_to_cobra}/instances/B/${instance} --seed ${seed} --outpath results/b-long/ --coreopt-iterations 1000000
 	done
 done
 
 for seed in {0..49..1}; do
 	for instance in "${k_instances[@]}"; do
-		${executable} ${path_to_cobra}/instances/K/${instance} --seed ${seed} --outpath results/k --parser K --tolerance 0.05
-		${executable} ${path_to_cobra}/instances/K/${instance} --seed ${seed} --outpath results/k-long --coreopt-iterations 1000000 --parser K --tolerance 0.05
+		${executable} ${path_to_cobra}/instances/K/${instance} --seed ${seed} --outpath results/k/ --parser K --tolerance 0.05
+		${executable} ${path_to_cobra}/instances/K/${instance} --seed ${seed} --outpath results/k-long/ --coreopt-iterations 1000000 --parser K --tolerance 0.05
 	done
 done
 
 for seed in {0..49..1}; do
 	for instance in "${z_instances[@]}"; do
-		${executable} ${path_to_cobra}/instances/Z/${instance} --seed ${seed} --outpath results/z --parser Z
-		${executable} ${path_to_cobra}/instances/Z/${instance} --seed ${seed} --outpath results/z-long --coreopt-iterations 1000000 --parser Z
+		${executable} ${path_to_cobra}/instances/Z/${instance} --seed ${seed} --outpath results/z/ --parser Z
+		${executable} ${path_to_cobra}/instances/Z/${instance} --seed ${seed} --outpath results/z-long/ --coreopt-iterations 1000000 --parser Z
 	done
 done
 
