@@ -1,7 +1,5 @@
 [This repository](https://github.com/acco93/filo) and [COBRA](https://github.com/acco93/cobra) contain source code and support material associated with the paper *A Fast and Scalable Heuristic for the Solution of Large-Scale Capacitated Vehicle Routing Problems*
-
 - [Research report](https://github.com/acco93/filo/blob/master/docs/report.pdf)
-
 - [Slides](https://github.com/acco93/filo/blob/master/docs/slides.pdf)
 
 ***
