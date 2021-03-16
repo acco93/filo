@@ -1,11 +1,5 @@
 [This repository](https://github.com/acco93/filo) and [COBRA](https://github.com/acco93/cobra) contain source code and support material associated with the paper *A Fast and Scalable Heuristic for the Solution of Large-Scale Capacitated Vehicle Routing Problems* (draft available [here](http://or.dei.unibo.it/technical-reports/2020)).
 
-***
-
-**However, the source code of both projects will be made available once the paper is accepted.**
-
-***
-
 #### Building the code
 1. Build and install the [COBRA](https://github.com/acco93/cobra) library
 2. Clone the repository and build the algorithm
@@ -13,7 +7,7 @@
   git clone https://github.com/acco93/filo.git
   cd filo
   mkdir build && cd build
-  cmake .. -DCMAKE_BUILD_TYPE=Release
+  cmake .. -DCMAKE_BUILD_TYPE=Release -DENABLE_VERBOSE=ON
   make -j
 ```
 
@@ -41,18 +35,13 @@ More examples on how to run the code can be found in the [`scripts`](https://git
 
 #### How can I exactly reproduce the results shown in the [`results`](https://github.com/acco93/filo/tree/master/results) directory?
 
-###### 1. Using docker (preferred way)
-1. Download [a copy of the environment we used](#) to compile the code
-2. `cat env.tar.gz | docker import - filo:20200804`
+1. Drop me an email and I will send you a link you can use to donwload [a copy of the Ubuntu environment we used](#) to run the code
+2. Unzip `env.tar.zip` to obtain `env.tar`
+3. `docker image load -i env.tar`
 3. `docker run -t -i filo:20200804 /bin/bash`
-4. The project together with an already compiled executable can be found in `/data/git/filo`
+4. Executable and instances can be found in `/data`
 
-###### 2. Building the code with specific `c++` compiler and standard library version
-To ensure a complete reproducibility the code should be compiled with `g++ 8` which uses the c++ standard library version `libstdc++.so.6.0.25`.
-
-In fact, as a result of an unfortunate design choice we iterate over some `std::unordered_set` data structures (check the COBRA project in `/include/cobra/LocalSearch.hpp`) with the aim of inserting Static Move Descriptors (SMDs) into a binary heap data structure. The heap vector is then linearly scanned searching for a feasible SMD. However given that a binary heap is not unique for a given set of entries, the order in which SMDs are inserted might cause the linear scan of the heap to reach an SMD rather than another. The `c++` standard does not impose a given order for iterating over unordered data structures thus a slightly different `c++` version might result in a different iteration order causing the search trajectory to be be slightly different.
-
-Note however that average results over a reasonable number of runs, say 10, would still remain comparable even by using different compilers/versions.
+Note that `filo` executed within docker will not be as fast as `filo` executed on the native OS, however, this is the safest way if you want to check our results. For any other reason, consider using a native build.
 
 #### Screenshots
 Console output (`ENABLE_VERBOSE=ON`). ROUTEMIN: % Inf = n. infeasible solution over number of performed iterations. COREOPT: Gamma = average sparsification factor, Omega = average shaking intensity.
