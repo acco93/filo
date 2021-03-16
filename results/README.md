@@ -15,4 +15,4 @@ https://github.com/acco93/cobra/instances/
 For each dataset, there are results associated with short and long runs.
 For each instance and seed, there is `.out` file containing the solution value and the computing time in seconds and `.sol` containing the solution representation.
 
-Summarized results in `csv` format are available here.
+Results are also available in csv format: [x](x/summary.csv), [x-long](x-long/summary.csv), [b](b/summary.csv), [b-long](b-long/summary.csv), [k](k/summary.csv), [k-long](k-long/summary.csv), [z](z/summary.csv), [z-long](z-long/summary.csv)
