@@ -44,7 +44,7 @@ More examples on how to run the code can be found in the [`scripts`](https://git
 
 #### How can I exactly reproduce the results shown in the [`results`](https://github.com/acco93/filo/tree/master/results) directory?
 
-1. Drop me an email and I will send you a link you can use to donwload [a copy of the Ubuntu environment we used](#) to run the code
+1. Drop me an email and I will send you a link you can use to donwload a copy of the Ubuntu environment we used to run the code
 2. Unzip `env.tar.zip` to obtain `env.tar`
 3. `docker image load -i env.tar`
 3. `docker run -t -i filo:20200804 /bin/bash`
