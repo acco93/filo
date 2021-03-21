@@ -7,14 +7,14 @@
 #include <cobra/PrettyPrinter.hpp>
 #include <cobra/SimulatedAnnealing.hpp>
 #include <cobra/Welford.hpp>
+#include <filesystem>
 #include "bpp.hpp"
 #include "routemin.hpp"
 #include "RuinAndRecreate.hpp"
 #include "arg_parser.hpp"
 
 #ifdef GUI
-#include "SolutionRenderer.hpp"
-#include "TrajectoryRenderer.hpp"
+#include "Renderer.hpp"
 #endif
 
 // Available parsers
@@ -37,13 +37,7 @@ auto main(int argc, char* argv[]) -> int {
     const auto outfile = arg_parser.get_outpath() + get_basename(arg_parser.get_instance_path()) + "_seed-"
         + std::to_string(arg_parser.get_seed())+".out";
 
-    const auto mkdir = std::string("mkdir -p " + arg_parser.get_outpath());
-    const auto system_status = system(mkdir.c_str());
-    if (system_status < 0 || !WIFEXITED(system_status)) {
-        std::cout << "Not able to create a directory in " << arg_parser.get_outpath() << "\n";
-        std::cout << "Please specify another path with write permission.";
-        exit(EXIT_FAILURE);
-    }
+    std::filesystem::create_directories(arg_parser.get_outpath());
 
     const auto global_time_begin = std::chrono::high_resolution_clock::now();
 
@@ -240,7 +234,7 @@ auto main(int argc, char* argv[]) -> int {
     #endif
 
     #ifdef GUI
-    auto renderer = SolutionRenderer(instance);
+    auto renderer = Renderer(instance, solution.get_cost());
     #endif
 
     auto rr = RuinAndRecreate(instance, rand_engine);
@@ -271,10 +265,6 @@ auto main(int argc, char* argv[]) -> int {
     #endif
 
     solution.clear_cache();
-
-    #ifdef GUI
-    auto evo = TrajectoryRenderer(solution.get_cost());
-    #endif
 
     for (auto iter = 0; iter < coreopt_iterations; iter++) {
 
@@ -314,9 +304,7 @@ auto main(int argc, char* argv[]) -> int {
         auto max_non_improving_iterations = static_cast<int>(std::ceil(delta * static_cast<float>(coreopt_iterations) * static_cast<float>(average_number_of_vertices_accessed.get_mean()) / static_cast<float>(instance.get_vertices_num())));
 
         #ifdef GUI
-        if(iter % 100 == 0) {
-            renderer.draw(instance,best_solution, neighbor.get_cache(),move_generators);
-        }
+        if(iter % 100 == 0) { renderer.draw(best_solution, neighbor.get_cache(),move_generators); }
         #endif
 
         #ifdef VERBOSE
@@ -398,8 +386,7 @@ auto main(int argc, char* argv[]) -> int {
         sa.decrease_temperature();
 
         #ifdef GUI
-        evo.add(shaken_solution_cost, local_optimum_cost, solution.get_cost(), best_solution.get_cost());
-        if(iter % 100 == 0) { evo.render(); }
+        renderer.add_trajectory_point(shaken_solution_cost, local_optimum_cost, solution.get_cost(), best_solution.get_cost());
         #endif
 
         #ifdef VERBOSE
