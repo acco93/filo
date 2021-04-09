@@ -10,7 +10,7 @@ http://vrp.galgos.inf.puc-rio.br/index.php/en/
 
 Alternatively all datasets can be downloaded from
 
-https://github.com/acco93/cobra/instances/
+https://github.com/acco93/cobra/tree/master/instances
 
 For each dataset, there are results associated with short and long runs.
 For each instance and seed, there is `.out` file containing the solution value and the computing time in seconds and `.sol` containing the solution representation.
