@@ -190,6 +190,7 @@ auto main(int argc, char* argv[]) -> int {
         #endif
     }
 
+    // retrieve the number of core opt iterations or the total algorithm runtime when TIMEBASED is ON
     const auto coreopt_iterations = arg_parser.get_coreopt_iterations();
 
     auto best_solution = solution;
@@ -222,13 +223,19 @@ auto main(int argc, char* argv[]) -> int {
         {"Objective", cobra::PrettyPrinter::Field::Type::INTEGER, 10, " "},
         {"Routes", cobra::PrettyPrinter::Field::Type::INTEGER, 6, " "},
         {"Iter/s",cobra::PrettyPrinter::Field::Type::REAL, 10, " "},
+        #ifdef TIMEBASED
+        {"Eta (s)", cobra::PrettyPrinter::Field::Type::INTEGER, 10, " "},
+        #else
         {"Eta (s)", cobra::PrettyPrinter::Field::Type::REAL, 10, " "},
+        #endif
         {"Gamma", cobra::PrettyPrinter::Field::Type::REAL, 5, " "},
         {"Omega", cobra::PrettyPrinter::Field::Type::REAL, 6, " "},
         {"Temp", cobra::PrettyPrinter::Field::Type::REAL, 6, " "}
     });
 
+    #ifndef TIMEBASED
     auto main_opt_loop_begin_time = std::chrono::high_resolution_clock::now();
+    #endif
 
     auto elapsed_minutes = 0;
     #endif
@@ -258,7 +265,14 @@ auto main(int argc, char* argv[]) -> int {
 
     const auto sa_initial_temperature = mean_arc_cost / 10.0f;
     const auto sa_final_temperature = sa_initial_temperature / 100.0f;
+
+    #ifdef TIMEBASED
+    auto elapsed_time = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::high_resolution_clock::now() - global_time_begin).count();
+    auto sa = cobra::TimeBasedSimulatedAnnealing(sa_initial_temperature, sa_final_temperature, rand_engine, coreopt_iterations - elapsed_time);
+    #else
     auto sa = cobra::SimulatedAnnealing(sa_initial_temperature, sa_final_temperature, rand_engine, coreopt_iterations);
+    #endif
+
 
     #ifdef VERBOSE
     std::cout << "Simulated annealing temperature goes from "<< sa_initial_temperature << " to " << sa_final_temperature << ".\n\n";
@@ -266,7 +280,11 @@ auto main(int argc, char* argv[]) -> int {
 
     solution.clear_cache();
 
+    #ifdef TIMEBASED
+    for (auto iter = 0; elapsed_time < coreopt_iterations; iter++) {
+    #else
     for (auto iter = 0; iter < coreopt_iterations; iter++) {
+    #endif
 
         auto neighbor = solution;
 
@@ -301,7 +319,18 @@ auto main(int argc, char* argv[]) -> int {
         #endif
 
         average_number_of_vertices_accessed.update(static_cast<float>(neighbor.get_cache().size()));
+
+        #ifdef TIMEBASED
+        const auto iter_per_second = static_cast<float>(iter+1) / (static_cast<float>(elapsed_time) + 0.01f);
+        const auto remaining_time = coreopt_iterations - elapsed_time;
+        const auto estimated_remaining_iter = iter_per_second * remaining_time;
+        const auto expected_total_iterations_num = iter+1 + estimated_remaining_iter;
+
+        const auto max_non_improving_iterations = static_cast<int>(std::ceil(delta * static_cast<float>(expected_total_iterations_num) * static_cast<float>(average_number_of_vertices_accessed.get_mean()) /static_cast<float>(instance.get_vertices_num())));
+
+        #else
         auto max_non_improving_iterations = static_cast<int>(std::ceil(delta * static_cast<float>(coreopt_iterations) * static_cast<float>(average_number_of_vertices_accessed.get_mean()) / static_cast<float>(instance.get_vertices_num())));
+        #endif
 
         #ifdef GUI
         if(iter % 100 == 0) { renderer.draw(best_solution, neighbor.get_cache(),move_generators); }
@@ -374,7 +403,13 @@ auto main(int argc, char* argv[]) -> int {
             }
         }
 
+
+        #ifdef TIMEBASED
+        elapsed_time = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::high_resolution_clock::now() - global_time_begin).count();
+        if (sa.accept(solution, neighbor, elapsed_time)) {
+        #else
         if (sa.accept(solution, neighbor)) {
+        #endif
             solution = neighbor;
             if(!round_costs) { solution.recompute_costs(); } // avoid too many rounding errors get summed during LS
             solution.clear_cache();
@@ -392,14 +427,18 @@ auto main(int argc, char* argv[]) -> int {
         #ifdef VERBOSE
 
         partial_time_end = std::chrono::high_resolution_clock::now();
-        const auto elapsed_time = std::chrono::duration_cast<std::chrono::seconds>(partial_time_end - partial_time_begin).count();
-        if (elapsed_time > 1) {
+        if (std::chrono::duration_cast<std::chrono::seconds>(partial_time_end - partial_time_begin).count() > 1) {
 
+            #ifdef TIMEBASED
+            const auto progress = 100.0f*elapsed_time/coreopt_iterations;
+            const auto estimated_rem_time = remaining_time;
+            #else
             const auto progress = 100.0f*(iter + 1.0f)/coreopt_iterations;
             const auto elapsed_seconds = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::high_resolution_clock::now() - main_opt_loop_begin_time).count();
             const auto iter_per_second = static_cast<float>(iter + 1)/(static_cast<float>(elapsed_seconds) + 0.01f);
             const auto remaining_iter = coreopt_iterations - iter;
             const auto estimated_rem_time = static_cast<float>(remaining_iter)/iter_per_second;
+            #endif
 
             auto gamma_mean = 0.0f;
             for (auto i = instance.get_vertices_begin(); i < instance.get_vertices_end(); i++) { gamma_mean += gamma[i]; }
@@ -420,15 +459,17 @@ auto main(int argc, char* argv[]) -> int {
                           estimated_rem_time,
                           gamma_mean,
                           omega_mean,
+                          #ifdef TIMEBASED
+                          sa.get_temperature(elapsed_time)
+                          #else
                           sa.get_temperature()
-
+                          #endif
             );
 
             partial_time_begin = std::chrono::high_resolution_clock::now();
 
         }
-
-#endif
+        #endif
 
     }
 

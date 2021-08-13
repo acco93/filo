@@ -24,8 +24,9 @@ In order to enable an option `XYZ`, add `-DXYZ=ON` to the `cmake` command before
 
 Available options
 
-* `ENABLE_VERBOSE` output some information during the resolution
+* `ENABLE_VERBOSE` output some information during the resolution.
 * `ENABLE_GUI` creates a GLFW window showing a graphical representation of the best found solution along with some information regarding move generators and recently accessed vertices, and another GLFW window showing the algorithm search trajectory. Some additional packages, e.g. `libglfw3-dev`, may be necessary to compile the code when this option is enabled.
+* `TIMEBASED_TERMINATION` allows you to specify a termination criterion based on a maximum number of seconds.
 
 #### Running the code
 

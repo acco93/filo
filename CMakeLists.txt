@@ -36,6 +36,13 @@ else()
     message("--- Graphical interface DISABLED")
 endif()
 
+if(TIMEBASED_TERMINATION)
+    message("--- Time based termination ENABLED")
+    add_definitions(-DTIMEBASED)
+else()
+    message("--- Time based termination DISABLED")
+endif()
+
 find_package(cobra 1.0.0 REQUIRED)
 
 add_executable(filo ${SOURCE})

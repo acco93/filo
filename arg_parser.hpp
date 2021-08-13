@@ -12,7 +12,11 @@
 #define DEFAULT_CW_LAMBDA (1.0f)
 #define DEFAULT_CW_NEIGHBORS (100)
 #define DEFAULT_ROUTEMIN_ITERATIONS (1000)
+#ifdef TIMEBASED
+#define DEFAULT_COREOPT_ITERATIONS (60)
+#else
 #define DEFAULT_COREOPT_ITERATIONS (100000)
+#endif
 #define DEFAULT_SPARSIFICATION_RULE1_NEIGHBORS (25)
 #define DEFAULT_SPARSIFICATION_FACTOR (0.25f)
 #define DEFAULT_SPARSIFICATION_MULTIPLIER (0.50f)
@@ -28,7 +32,11 @@
 #define TOKEN_SPARSIFICATION_RULE1_NEIGHBORS ("--granular-neighbors")
 #define TOKEN_SOLUTION_CACHE_HISTORY ("--cache")
 #define TOKEN_ROUTEMIN_ITERATIONS ("--routemin-iterations")
+#ifdef TIMEBASED
+#define TOKEN_COREOPT_ITERATIONS ("--time")
+#else
 #define TOKEN_COREOPT_ITERATIONS ("--coreopt-iterations")
+#endif
 #define TOKEN_SPARSIFICATION_FACTOR ("--granular-gamma-base")
 #define TOKEN_SPARSIFICATION_MULTIPLIER ("--granular-delta")
 #define TOKEN_SHAKING_LB_FACTOR ("--shaking-lower-bound")
@@ -149,7 +157,11 @@ void print_help() {
     std::cout << TOKEN_SPARSIFICATION_RULE1_NEIGHBORS << " INT\tNeighbors per vertex in granular neighborhoods (default: "<<DEFAULT_SPARSIFICATION_RULE1_NEIGHBORS << ")\n";
     std::cout << TOKEN_SOLUTION_CACHE_HISTORY << " INT\t\t\tSelective cache dimension (default: " << DEFAULT_SOLUTION_CACHE_HISTORY <<")\n";
     std::cout << TOKEN_ROUTEMIN_ITERATIONS << " INT\tMax route minimization iterations (default: " << DEFAULT_ROUTEMIN_ITERATIONS << ")\n";
+    #ifdef TIMEBASED
+    std::cout << TOKEN_COREOPT_ITERATIONS << " INT\t\t\tRuntime in seconds (default: " << DEFAULT_COREOPT_ITERATIONS << ")\n";
+    #else
     std::cout << TOKEN_COREOPT_ITERATIONS << " INT\tCore optimization iterations (default: " << DEFAULT_COREOPT_ITERATIONS << ")\n";
+    #endif
     std::cout << TOKEN_SPARSIFICATION_FACTOR << " FLOAT\tInitial sparsification factor gamma base (default: " << DEFAULT_SPARSIFICATION_FACTOR << ")\n";
     std::cout << TOKEN_SPARSIFICATION_MULTIPLIER << " FLOAT\t\tGranular reduction factor delta (default: " << DEFAULT_SPARSIFICATION_MULTIPLIER << ")\n";
     std::cout << TOKEN_SHAKING_LB_FACTOR << " FLOAT\tShaking lower bound factor (default: " << DEFAULT_SHAKING_LB_FACTOR << ")\n";
