@@ -194,6 +194,9 @@ auto main(int argc, char* argv[]) -> int {
     const auto coreopt_iterations = arg_parser.get_coreopt_iterations();
 
     auto best_solution = solution;
+    #ifdef VERBOSE
+    auto best_solution_time = std::chrono::high_resolution_clock::now();
+    #endif
 
     const auto gamma_base = arg_parser.get_gamma_base();
     auto gamma = std::vector<float>(instance.get_vertices_num(), gamma_base);
@@ -222,6 +225,7 @@ auto main(int argc, char* argv[]) -> int {
         {"Iterations", cobra::PrettyPrinter::Field::Type::INTEGER, 10, " "},
         {"Objective", cobra::PrettyPrinter::Field::Type::INTEGER, 10, " "},
         {"Routes", cobra::PrettyPrinter::Field::Type::INTEGER, 6, " "},
+        {"Found after (s)", cobra::PrettyPrinter::Field::Type::INTEGER, 15, " "},
         {"Iter/s",cobra::PrettyPrinter::Field::Type::REAL, 10, " "},
         #ifdef TIMEBASED
         {"Eta (s)", cobra::PrettyPrinter::Field::Type::INTEGER, 10, " "},
@@ -344,6 +348,9 @@ auto main(int argc, char* argv[]) -> int {
         if (neighbor.get_cost() < best_solution.get_cost()) {
 
             best_solution = neighbor;
+            #ifdef VERBOSE
+            best_solution_time = std::chrono::high_resolution_clock::now();
+            #endif
 
             gamma_vertices.clear();
             for (auto i = neighbor.get_cache().begin(); i!=cobra::LRUCache::Entry::dummy_vertex; i = neighbor.get_cache().get_next(i)) {
@@ -425,7 +432,6 @@ auto main(int argc, char* argv[]) -> int {
         #endif
 
         #ifdef VERBOSE
-
         partial_time_end = std::chrono::high_resolution_clock::now();
         if (std::chrono::duration_cast<std::chrono::seconds>(partial_time_end - partial_time_begin).count() > 1) {
 
@@ -455,6 +461,7 @@ auto main(int argc, char* argv[]) -> int {
             printer.print(progress, iter + 1,
                           best_solution.get_cost(),
                           best_solution.get_routes_num(),
+                          std::chrono::duration_cast<std::chrono::seconds>(best_solution_time - global_time_begin).count(),
                           iter_per_second,
                           estimated_rem_time,
                           gamma_mean,
@@ -478,7 +485,8 @@ auto main(int argc, char* argv[]) -> int {
     #ifdef VERBOSE
     std::cout << "\n";
     std::cout << "Best solution found:\n";
-    std::cout << "obj = " << best_solution.get_cost() << ", n. routes = " << best_solution.get_routes_num() << "\n";
+    std::cout << "obj = " << best_solution.get_cost() << ", n. routes = " << best_solution.get_routes_num() << ", found after = " << std::chrono::duration_cast<std::chrono::seconds>(best_solution_time - global_time_begin).count() << " seconds ";
+    std::cout << "(" << std::chrono::duration_cast<std::chrono::milliseconds>(best_solution_time - global_time_begin).count() << " milliseconds).\n";
 
     std::cout << "\n";
     std::cout << "Run completed in " << std::chrono::duration_cast<std::chrono::seconds>(global_time_end - global_time_begin).count() << " seconds ";
@@ -500,5 +508,3 @@ auto main(int argc, char* argv[]) -> int {
     return EXIT_SUCCESS;
 
 }
-
-
