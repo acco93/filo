@@ -1,5 +1,6 @@
-Check out [FILO2](https://github.com/acco93/filo2), a more scalable version of FILO.
-
+Check out 
+- [FILO2](https://github.com/acco93/filo2): a more scalable version of FILO.
+- [FILO2<sup>x</sup>](https://github.com/acco93/filo2x): a parallel version of FILO2
 ------------------------------------------------------------------------------------
 
 [This repository](https://github.com/acco93/filo) and [COBRA](https://github.com/acco93/cobra) contain source code and support material associated with the paper *A Fast and Scalable Heuristic for the Solution of Large-Scale Capacitated Vehicle Routing Problems*
